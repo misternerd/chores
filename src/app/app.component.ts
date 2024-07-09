@@ -28,31 +28,31 @@ export class AppComponent {
   errors: string[] = [];
 
   ngOnInit() {
-    for(const chore of CHORES) {
-      if(!isMonday(chore.lastExecutedDate)) {
-        this.errors.push( `Chore ${chore.name} has not been last executed on a Monday`);
+    for (const chore of CHORES) {
+      if (!isMonday(chore.lastExecutedDate)) {
+        this.errors.push(`Chore ${chore.name} has not been last executed on a Monday`);
         continue;
       }
 
-      if(!HOUSEHOLD_MEMBERS.includes(chore.lastExecutedMember)) {
+      if (!HOUSEHOLD_MEMBERS.includes(chore.lastExecutedMember)) {
         this.errors.push(`Chore ${chore.name} has been last executed by a person not in HOUSEHOLD_MEMBERS`);
         continue;
       }
 
-      if(chore.members && chore.members.filter(m => !HOUSEHOLD_MEMBERS.includes(m)).length) {
+      if (chore.members && chore.members.filter(m => !HOUSEHOLD_MEMBERS.includes(m)).length) {
         this.errors.push(`One of members of chore ${chore.name} not in HOUSEHOLD_MEMBERS`);
       }
     }
   }
 
   setStartDate(event: MatDatepickerInputEvent<Date>) {
-    if(event.value) {
+    if (event.value) {
       this.startDate = event.value;
     }
   }
 
   setEndDate(event: MatDatepickerInputEvent<Date>) {
-    if(event.value) {
+    if (event.value) {
       this.endDate = event.value;
     }
   }
