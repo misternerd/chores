@@ -6,9 +6,9 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
 import {CommonModule, DatePipe, NgIf} from "@angular/common";
-import {ChoreListComponent} from "./components/chore-list/chore-list.component";
+import {ChoreListComponent} from "../chore-list/chore-list.component";
 import {addMonths, isMonday} from 'date-fns';
-import {CHORES, HOUSEHOLD_MEMBERS} from "../chores.config";
+import {CHORES, HOUSEHOLD_MEMBERS} from "../../../chores.config";
 
 import {MatCardModule} from '@angular/material/card';
 
