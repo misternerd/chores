@@ -1,0 +1,31 @@
+.chore-table {
+  margin: 0;
+  width: 100%;
+}
+
+.chore-table th, .chore-table td {
+  border-bottom-color: rgb(196, 198, 208);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  box-sizing: border-box;
+  font-weight: inherit;
+  letter-spacing: var(--mat-table-header-headline-tracking);
+  line-height: inherit;
+  outline: none;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.chore-table th {
+  font-weight: bold;
+}
+
+.chore-table th.month-header {
+  background-color: rgba(0, 0, 0, 0.12);
+  font-size: 110%;
+  font-weight: bold;
+  padding: 0.2em 0;
+  print-color-adjust: exact;
+  text-align: center;
+}

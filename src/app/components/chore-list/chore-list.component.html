@@ -1,17 +1,20 @@
-<div *ngFor="let monthData of tableDataByMonth">
-  <h5>{{monthData.date | date:'MMMM'}}</h5>
-
-  <table mat-table [dataSource]="monthData.tableData">
-    <ng-container *ngFor="let colName of tableColumnNames; index as i;" [matColumnDef]="colName">
-      <th mat-header-cell *matHeaderCellDef> {{tableColumnDisplayNames[i]}} </th>
-      <td mat-cell *matCellDef="let element">
-        <span *ngIf="colName === 'date'">{{element[colName] | date: 'dd.MM.'}}</span>
-        <div *ngIf="colName !== 'date'">
-          <div *ngFor="let item of element[colName]">{{item}}</div>
+<table class="chore-table">
+  <ng-container *ngFor="let monthData of tableDataByMonth">
+    <tr>
+      <th class="month-header" [colSpan]="tableColumnNames.length"> {{monthData.date  | date:'MMMM'}}</th>
+    </tr>
+    <tr>
+      <th *ngFor="let colName of tableColumnDisplayNames">{{colName}}</th>
+    </tr>
+    <tr *ngFor="let rowData of monthData.tableDataByWeek;">
+      <td *ngFor="let colName of tableColumnNames;">
+        <span *ngIf="colName === 'displayDate'">
+          <strong>{{rowData['displayDate']}}</strong>
+        </span>
+        <div *ngIf="colName !== 'displayDate'">
+          {{rowData[colName] | SortConcat}}
         </div>
       </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="tableColumnNames"></tr>
-    <tr mat-row *matRowDef="let row; columns: tableColumnNames;"></tr>
-  </table>
-</div>
+    </tr>
+  </ng-container>
+</table>

@@ -9,10 +9,11 @@ import {CHORES, HOUSEHOLD_MEMBERS} from "../../../chores.config";
 import {Chore} from "../../../types/chore.type";
 import {CommonModule, DatePipe, NgForOf} from "@angular/common";
 import {ChoreService} from "../../service/chore.service";
+import {SortConcatPipe} from "../../pipe/sort.pipe";
 
 interface MonthData {
   date: Date;
-  tableData: any;
+  tableDataByWeek: any;
 }
 
 interface ChoreExecution {
@@ -22,9 +23,10 @@ interface ChoreExecution {
 }
 
 @Component({
-  imports: [MatTableModule, NgForOf, DatePipe, CommonModule],
+  imports: [MatTableModule, NgForOf, DatePipe, CommonModule, SortConcatPipe],
   selector: 'chore-list',
   standalone: true,
+  styleUrl: './chore-list.component.scss',
   templateUrl: './chore-list.component.html',
 })
 export class ChoreListComponent {
@@ -32,7 +34,7 @@ export class ChoreListComponent {
   @Input() startDate!: Date;
   @Input() endDate!: Date;
 
-  tableColumnNames: string[] = ['date'];
+  tableColumnNames: string[] = ['displayDate'];
   tableColumnDisplayNames: string[] = ['Date'];
   tableDataByMonth: MonthData[] = [];
 
@@ -45,18 +47,18 @@ export class ChoreListComponent {
 
   ngOnChanges() {
     const tableData: MonthData[] = [];
-    const choreExecutions = this.calculateNextChoreExecutions();
+    const choreExecutions = this.convertChoresToExecutions();
     const startMonday = startOfWeek(this.startDate, {weekStartsOn: 1});
     const endSunday = endOfWeek(this.endDate, {weekStartsOn: 1});
     const startDate = this.getStartDateForCalculation(choreExecutions, startMonday);
 
     for (let currentDate = startDate; isBefore(currentDate, endSunday); currentDate = addWeeks(currentDate, 1)) {
       currentDate = startOfDay(currentDate);
-      const rowData = this.createTableRow(currentDate);
+      const weekData = this.createWeekData(currentDate);
 
       for (const chore of choreExecutions) {
         if (isEqual(chore.nextExecutionDate, currentDate)) {
-          (rowData as any)[chore.nextExecutionMember].push(chore.data.name);
+          (weekData as any)[chore.nextExecutionMember].push(chore.data.name);
           chore.nextExecutionDate = this.choreService.getNextExecutionDateForChore(chore.data, chore.nextExecutionDate);
           chore.nextExecutionMember = this.choreService.getNextExecutionMemberForChore(chore.data, chore.nextExecutionMember);
         }
@@ -71,11 +73,11 @@ export class ChoreListComponent {
       if (!tableData[monthIndex]) {
         tableData[monthIndex] = {
           date: currentDate,
-          tableData: [],
+          tableDataByWeek: [],
         };
       }
 
-      tableData[monthIndex].tableData.push(rowData);
+      tableData[monthIndex].tableDataByWeek.push(weekData);
     }
 
     this.tableDataByMonth = tableData.filter(x => !!x);
@@ -92,19 +94,21 @@ export class ChoreListComponent {
     return isAfter(earliestNextExecutionDate, startMonday) ? startMonday : earliestNextExecutionDate;
   }
 
-  private calculateNextChoreExecutions() {
+  private convertChoresToExecutions(): ChoreExecution[] {
     return CHORES
       .map(chore => ({
         data: chore,
-        ...this.choreService.getNextExecutionDateAndMemberForChore(chore),
+        nextExecutionDate: chore.lastExecutedDate,
+        nextExecutionMember: chore.lastExecutedMember,
       }));
   }
 
-  private createTableRow(currentDate: Date) {
+  private createWeekData(currentDate: Date) {
     const memberColumns = HOUSEHOLD_MEMBERS
       .reduce((previousValue, currentValue) => ({...previousValue, [currentValue]: []}), {});
+    const weekEnd = endOfWeek(currentDate, {weekStartsOn: 1});
     return {
-      date: currentDate,
+      displayDate: `${format(currentDate, 'dd.MM.')}-${format(weekEnd, 'dd.MM.')}`,
       ...memberColumns,
     };
   }

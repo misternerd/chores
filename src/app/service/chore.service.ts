@@ -9,13 +9,6 @@ import {HOUSEHOLD_MEMBERS} from "../../chores.config";
 })
 export class ChoreService {
 
-  getNextExecutionDateAndMemberForChore(chore: Chore) {
-    const nextExecutionDate = this.getNextExecutionDateForChore(chore, chore.lastExecutedDate);
-    const nextExecutionMember = this.getNextExecutionMemberForChore(chore, chore.lastExecutedMember);
-
-    return {nextExecutionDate, nextExecutionMember};
-  }
-
   getNextExecutionDateForChore(chore: Chore, lastExecutedDate: Date): Date {
     const nextExecutionDate = addWeeks(lastExecutedDate, chore.cadenceInWeeks);
     return startOfDay(nextExecutionDate);

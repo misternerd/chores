@@ -4,7 +4,13 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 @media print {
+  html {
+    font-size: 75%;
+  }
+
   .dont-print {
     display: none;
   }
+
+
 }
