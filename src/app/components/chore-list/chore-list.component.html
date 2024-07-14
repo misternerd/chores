@@ -1,20 +1,20 @@
 <table class="chore-table">
-  <ng-container *ngFor="let monthData of tableDataByMonth">
-    <tr>
-      <th class="month-header" [colSpan]="tableColumnNames.length"> {{monthData.date  | date:'MMMM'}}</th>
-    </tr>
-    <tr>
-      <th *ngFor="let colName of tableColumnDisplayNames">{{colName}}</th>
-    </tr>
-    <tr *ngFor="let rowData of monthData.tableDataByWeek;">
-      <td *ngFor="let colName of tableColumnNames;">
+	<ng-container *ngFor="let monthData of tableDataByMonth">
+		<tr>
+			<th [colSpan]="tableColumnNames.length" class="month-header"> {{ monthData.date  | date:'MMMM' }}</th>
+		</tr>
+		<tr>
+			<th *ngFor="let colName of tableColumnDisplayNames">{{ colName }}</th>
+		</tr>
+		<tr *ngFor="let rowData of monthData.tableDataByWeek;">
+			<td *ngFor="let colName of tableColumnNames;">
         <span *ngIf="colName === 'displayDate'">
-          <strong>{{rowData['displayDate']}}</strong>
+          <strong>{{ rowData['displayDate'] }}</strong>
         </span>
-        <div *ngIf="colName !== 'displayDate'">
-          {{rowData[colName] | SortConcat}}
-        </div>
-      </td>
-    </tr>
-  </ng-container>
+				<div *ngIf="colName !== 'displayDate'">
+					{{ rowData[colName] | SortConcat }}
+				</div>
+			</td>
+		</tr>
+	</ng-container>
 </table>

@@ -5,20 +5,20 @@ import {HOUSEHOLD_MEMBERS} from "../../chores.config";
 
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class ChoreService {
 
-  getNextExecutionDateForChore(chore: Chore, lastExecutedDate: Date): Date {
-    const nextExecutionDate = addWeeks(lastExecutedDate, chore.cadenceInWeeks);
-    return startOfDay(nextExecutionDate);
-  }
+	getNextExecutionDateForChore(chore: Chore, lastExecutedDate: Date): Date {
+		const nextExecutionDate = addWeeks(lastExecutedDate, chore.cadenceInWeeks);
+		return startOfDay(nextExecutionDate);
+	}
 
-  getNextExecutionMemberForChore(chore: Chore, lastExecutedMember: string): string {
-    const members = chore.members ?? HOUSEHOLD_MEMBERS;
-    const currentMemberIndex = members.indexOf(lastExecutedMember);
+	getNextExecutionMemberForChore(chore: Chore, lastExecutedMember: string): string {
+		const members = chore.members ?? HOUSEHOLD_MEMBERS;
+		const currentMemberIndex = members.indexOf(lastExecutedMember);
 
-    return members[(currentMemberIndex + 1) % members.length];
-  }
+		return members[(currentMemberIndex + 1) % members.length];
+	}
 
 }

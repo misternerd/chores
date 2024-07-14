@@ -1,37 +1,37 @@
 <div *ngIf="errors.length">
-  <h1>Error</h1>
-  <ul>
-    <li *ngFor="let error of errors">{{error}}</li>
-  </ul>
+	<h1>Error</h1>
+	<ul>
+		<li *ngFor="let error of errors">{{ error }}</li>
+	</ul>
 </div>
 
 <div *ngIf="!errors.length">
-  <div class="dont-print">
-    <mat-card appearance="outlined" class="centered-content">
-      <mat-card-content>
-        <mat-form-field>
-          <mat-label>Date range for plan</mat-label>
-          <mat-date-range-input [rangePicker]="rangePicker">
-            <input matStartDate placeholder="Start date" [value]="startDate" (dateChange)="setStartDate($event)">
-            <input matEndDate placeholder="End date" [value]="endDate" (dateChange)="setEndDate($event)">
-          </mat-date-range-input>
-          <mat-hint>YYYY-MM-DD – YYYY-MM-DD</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
-          <mat-date-range-picker #rangePicker></mat-date-range-picker>
-        </mat-form-field>
-      </mat-card-content>
-    </mat-card>
+	<div class="dont-print">
+		<mat-card appearance="outlined" class="centered-content">
+			<mat-card-content>
+				<mat-form-field>
+					<mat-label>Date range for plan</mat-label>
+					<mat-date-range-input [rangePicker]="rangePicker">
+						<input (dateChange)="setStartDate($event)" [value]="startDate" matStartDate placeholder="Start date">
+						<input (dateChange)="setEndDate($event)" [value]="endDate" matEndDate placeholder="End date">
+					</mat-date-range-input>
+					<mat-hint>YYYY-MM-DD – YYYY-MM-DD</mat-hint>
+					<mat-datepicker-toggle [for]="rangePicker" matIconSuffix></mat-datepicker-toggle>
+					<mat-date-range-picker #rangePicker></mat-date-range-picker>
+				</mat-form-field>
+			</mat-card-content>
+		</mat-card>
 
-    <mat-divider></mat-divider>
+		<mat-divider></mat-divider>
 
-    <br>
+		<br>
 
-    <h2 class="centered-content dont-print">
-      Plan for {{ startDate | date:'dd.MM.YYYY' }} - {{ endDate | date:'dd.MM.YYYY' }}
-    </h2>
-  </div>
+		<h2 class="centered-content dont-print">
+			Plan for {{ startDate | date:'dd.MM.YYYY' }} - {{ endDate | date:'dd.MM.YYYY' }}
+		</h2>
+	</div>
 
-  <chore-list [startDate]="startDate" [endDate]="endDate"></chore-list>
+	<chore-list [endDate]="endDate" [startDate]="startDate"></chore-list>
 </div>
 
-<router-outlet />
+<router-outlet/>
