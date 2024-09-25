@@ -47,10 +47,11 @@ export class ChoreListComponent {
 
 	ngOnChanges() {
 		const tableData: MonthData[] = [];
-		const choreExecutions = this.convertChoresToExecutions();
 		const startMonday = startOfWeek(this.startDate, {weekStartsOn: 1});
 		const endSunday = endOfWeek(this.endDate, {weekStartsOn: 1});
-		const startDate = this.getStartDateForCalculation(choreExecutions, startMonday);
+		const choreExecutions = this.convertChoresToExecutions();
+		this.calculatePastExecutionsForChoresUpToStartDate(choreExecutions, startMonday);
+		const startDate = this.getMinNextExecutionDateFromChores(choreExecutions, startMonday);
 
 		for (let currentDate = startDate; isBefore(currentDate, endSunday); currentDate = addWeeks(currentDate, 1)) {
 			currentDate = startOfDay(currentDate);
@@ -83,17 +84,6 @@ export class ChoreListComponent {
 		this.tableDataByMonth = tableData.filter(x => !!x);
 	}
 
-	private getStartDateForCalculation(choreExecutions: {
-		nextExecutionDate: Date;
-		data: Chore;
-		nextExecutionMember: string
-	}[], startMonday: Date) {
-		const earliestNextExecutionDate = choreExecutions
-			.map(c => c.nextExecutionDate)
-			.sort((a, b) => b.getDate() - a.getDate())[0];
-		return isAfter(earliestNextExecutionDate, startMonday) ? startMonday : earliestNextExecutionDate;
-	}
-
 	private convertChoresToExecutions(): ChoreExecution[] {
 		return CHORES
 			.map(chore => ({
@@ -101,6 +91,30 @@ export class ChoreListComponent {
 				nextExecutionDate: chore.lastExecutedDate,
 				nextExecutionMember: chore.lastExecutedMember,
 			}));
+	}
+
+	private calculatePastExecutionsForChoresUpToStartDate(choreExecutions: ChoreExecution[], startMonday: Date) {
+		for(const chore of choreExecutions) {
+			if(isBefore(chore.nextExecutionDate, startMonday)) {
+				continue;
+			}
+
+			while(isAfter(chore.nextExecutionDate, startMonday)) {
+				chore.nextExecutionDate = this.choreService.getPreviousExecutionDateForChore(chore.data, chore.nextExecutionDate);
+				chore.nextExecutionMember = this.choreService.getPreviousExecutionMemberForChore(chore.data, chore.nextExecutionMember);
+			}
+		}
+	}
+
+	private getMinNextExecutionDateFromChores(choreExecutions: {
+		nextExecutionDate: Date;
+		data: Chore;
+		nextExecutionMember: string
+	}[], startMonday: Date) {
+		const earliestNextExecutionDate = choreExecutions
+			.map(c => c.nextExecutionDate)
+			.sort((a, b) => a.getTime() - b.getTime())[0];
+		return isAfter(earliestNextExecutionDate, startMonday) ? startMonday : earliestNextExecutionDate;
 	}
 
 	private createWeekData(currentDate: Date) {
